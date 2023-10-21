@@ -121,7 +121,7 @@ command.console() {
 # This command sets up the kubevirt hostpath provisioner
 command.storage() {
     info "Installing kubevirt CSI hostpath provisioner"
-    $OC apply -k $SCRIPT_DIR/config/storage
+    ##$OC apply -k $SCRIPT_DIR/config/storage
 }
 
 command.registry() {
