@@ -12,5 +12,5 @@ secretGenerator:
 patchesStrategicMerge:
 - htpasswd-cr.yaml
 resources:
-- htpasswd-cr2.yaml
+- htpassword-cr2.yaml
 - admin-rb.yaml
