@@ -20,6 +20,215 @@
 #   storage: 
 #     pvc:
 #       claim: image-registry-storage
-# --- 
-      
+# ---
+apiVersion: imageregistry.operator.openshift.io/v1
+kind: Config
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"imageregistry.operator.openshift.io/v1","kind":"Config","metadata":{"annotations":{},"finalizers":["imageregistry.operator.openshift.io/finalizer"],"name":"cluster"},"spec":{"defaultRoute":true,"logLevel":"Normal","managementState":"Managed","operatorLogLevel":"Normal","proxy":{},"replicas":1,"requests":{"read":{"maxWaitInQueue":"0s"},"write":{"maxWaitInQueue":"0s"}},"rolloutStrategy":"RollingUpdate","storage":{"pvc":{"claim":"image-registry-storage"}}}}
+  creationTimestamp: '2023-10-20T19:55:21Z'
+  finalizers:
+    - imageregistry.operator.openshift.io/finalizer
+  generation: 3
+  managedFields:
+    - apiVersion: imageregistry.operator.openshift.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:finalizers':
+            .: {}
+            'v:"imageregistry.operator.openshift.io/finalizer"': {}
+        'f:spec':
+          'f:unsupportedConfigOverrides': {}
+          'f:storage':
+            .: {}
+            'f:managementState': {}
+            'f:s3':
+              .: {}
+              'f:bucket': {}
+              'f:encrypt': {}
+              'f:region': {}
+              'f:virtualHostedStyle': {}
+          'f:httpSecret': {}
+          .: {}
+          'f:replicas': {}
+          'f:rolloutStrategy': {}
+          'f:logLevel': {}
+          'f:requests':
+            .: {}
+            'f:read':
+              .: {}
+              'f:maxWaitInQueue': {}
+            'f:write':
+              .: {}
+              'f:maxWaitInQueue': {}
+          'f:operatorLogLevel': {}
+          'f:proxy': {}
+          'f:managementState': {}
+          'f:observedConfig': {}
+      manager: Go-http-client
+      operation: Update
+      time: '2023-10-20T19:55:22Z'
+    - apiVersion: imageregistry.operator.openshift.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          .: {}
+          'f:conditions': {}
+          'f:generations': {}
+          'f:observedGeneration': {}
+          'f:readyReplicas': {}
+          'f:storage':
+            .: {}
+            'f:managementState': {}
+            'f:s3':
+              .: {}
+              'f:bucket': {}
+              'f:encrypt': {}
+              'f:region': {}
+              'f:virtualHostedStyle': {}
+          'f:storageManaged': {}
+      manager: Go-http-client
+      operation: Update
+      subresource: status
+      time: '2023-10-20T19:55:22Z'
+    - apiVersion: imageregistry.operator.openshift.io/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+        'f:spec':
+          'f:defaultRoute': {}
+          'f:storage':
+            'f:pvc':
+              .: {}
+              'f:claim': {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: '2023-10-20T20:22:27Z'
+  name: cluster
+  resourceVersion: '193627'
+  uid: 3849475b-1085-435c-8c43-f9527864bf83
+spec:
+  logLevel: Normal
+  rolloutStrategy: RollingUpdate
+  operatorLogLevel: Normal
+  requests:
+    read:
+      maxWaitInQueue: 0s
+    write:
+      maxWaitInQueue: 0s
+  defaultRoute: true
+  observedConfig: null
+  managementState: Managed
+  proxy: {}
+  unsupportedConfigOverrides: null
+  httpSecret: >-
+    d38585d11a3e38d430b10e3befb5ef65a332a715c087ef2a63831ae6ee70dd36c15f28b5bbc19c5cfa3ecd5b363df8e8d16418bc6789245edba2d3924e7e0dae
+  storage:
+    managementState: Managed
+    pvc:
+      claim: image-registry-storage
+    s3:
+      bucket: cluster-j9fgw-brhkn-image-registry-eu-west-1-cpofbkhcbahwqfono
+      encrypt: true
+      region: eu-west-1
+      virtualHostedStyle: false
+  replicas: 1
+status:
+  conditions:
+    - lastTransitionTime: '2023-10-20T19:55:21Z'
+      reason: S3 Bucket Exists
+      status: 'True'
+      type: StorageExists
+    - lastTransitionTime: '2023-10-20T19:55:22Z'
+      message: >-
+        Public access to the S3 bucket and its contents have been successfully
+        blocked.
+      reason: Public Access Block Successful
+      status: 'True'
+      type: StoragePublicAccessBlocked
+    - lastTransitionTime: '2023-10-20T19:55:22Z'
+      message: Tags were successfully applied to the S3 bucket
+      reason: Tagging Successful
+      status: 'True'
+      type: StorageTagged
+    - lastTransitionTime: '2023-10-20T19:55:22Z'
+      message: Default AES256 encryption was successfully enabled on the S3 bucket
+      reason: Encryption Successful
+      status: 'True'
+      type: StorageEncrypted
+    - lastTransitionTime: '2023-10-20T19:55:22Z'
+      message: >-
+        Default cleanup of incomplete multipart uploads after one (1) day was
+        successfully enabled
+      reason: Enable Cleanup Successful
+      status: 'True'
+      type: StorageIncompleteUploadCleanupEnabled
+    - lastTransitionTime: '2023-10-21T06:52:28Z'
+      message: The registry is ready
+      reason: Ready
+      status: 'True'
+      type: Available
+    - lastTransitionTime: '2023-10-20T20:22:27Z'
+      message: >-
+        Unable to apply resources: unable to sync storage configuration: exactly
+        one storage type should be configured at the same time, got 2: [S3 PVC]
+      reason: Error
+      status: 'True'
+      type: Progressing
+    - lastTransitionTime: '2023-10-20T19:55:22Z'
+      status: 'False'
+      type: Degraded
+    - lastTransitionTime: '2023-10-20T19:55:22Z'
+      status: 'False'
+      type: Removed
+    - lastTransitionTime: '2023-10-20T19:55:27Z'
+      message: The daemon set node-ca has available replicas
+      reason: AsExpected
+      status: 'True'
+      type: NodeCADaemonAvailable
+    - lastTransitionTime: '2023-10-20T19:55:22Z'
+      reason: AsExpected
+      status: 'False'
+      type: NodeCADaemonControllerDegraded
+    - lastTransitionTime: '2023-10-20T19:55:23Z'
+      reason: AsExpected
+      status: 'False'
+      type: ImageRegistryCertificatesControllerDegraded
+    - lastTransitionTime: '2023-10-20T19:55:23Z'
+      reason: AsExpected
+      status: 'False'
+      type: ImageConfigControllerDegraded
+    - lastTransitionTime: '2023-10-20T19:57:58Z'
+      reason: AsExpected
+      status: 'False'
+      type: AzureStackCloudControllerDegraded
+  generations:
+    - group: apps
+      hash: ''
+      lastGeneration: 2
+      name: image-registry
+      namespace: openshift-image-registry
+      resource: deployments
+    - group: apps
+      hash: ''
+      lastGeneration: 0
+      name: node-ca
+      namespace: openshift-image-registry
+      resource: daemonsets
+  observedGeneration: 3
+  readyReplicas: 1
+  storage:
+    managementState: Managed
+    s3:
+      bucket: cluster-j9fgw-brhkn-image-registry-eu-west-1-cpofbkhcbahwqfono
+      encrypt: true
+      region: eu-west-1
+      virtualHostedStyle: false
+  storageManaged: true
+
   
