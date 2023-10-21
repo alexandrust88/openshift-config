@@ -9,6 +9,7 @@ secretGenerator:
     files:
       - htpasswd
 
-resources:
+patchesStrategicMerge:
 - htpasswd-cr.yaml
+resources:
 - admin-rb.yaml
