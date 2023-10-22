@@ -17,5 +17,6 @@ resources:
 # configure registry
   - registry/image-registry.yaml
   - registry/config.yaml
+  - argocd-instance.yaml
   - echipseche.yaml
 
