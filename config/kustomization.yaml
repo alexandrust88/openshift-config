@@ -27,6 +27,7 @@ resources:
   - operators/must-gather.yaml
   - operators/rhods-operator.yaml
   
+  
 # configure registry
   - registry/image-registry.yaml
   - registry/config.yaml

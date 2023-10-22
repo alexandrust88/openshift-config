@@ -6,7 +6,7 @@ resources:
 - gitops.yaml
 - pipelines.yaml
 - serverless.yaml
-- strimzi.yaml
+#- strimzi.yaml
 - crunchy.yaml
 - aqua.yaml
 - devspaces.yaml
@@ -15,3 +15,9 @@ resources:
 - ocs-operator.yaml
 - odf-csi-addons-operator.yaml
 - odf-operator.yaml
+- amq-streams.yaml
+- compliance-operator.yaml
+- gpu-operator.yaml
+- loki-operator.yaml
+- must-gather.yaml
+- rhods-operator.yaml
