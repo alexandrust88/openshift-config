@@ -7,8 +7,10 @@ dupa ce devspaces e creat-- > go to route
 
 create workspace: from git : https://raw.githubusercontent.com/RedHat-EMEA-SSA-Team/end-to-end-developer-workshop/rhds/devfile.yaml 
 
+https://raw.githubusercontent.com/RedHat-EMEA-SSA-Team/end-to-end-developer-workshop/rhds/devfile.yaml
 
-
+https://github.com/redhat-developer/devspaces-demo/blob/main/change-default-ide.sh
+https://che.eclipseprojects.io/2021/10/12/@mario.loriedo-devfile-v2-and-the-devworkspace-operator-p1.html
 
 This is a script which has some configuration modules for a fresh and clean OpenShift installation. If you've been using the Single Node OpenShift installation, you need some persistent volumes and you need to make the internal registry able to store your images. 
 
