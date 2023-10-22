@@ -7,4 +7,10 @@ resources:
 - serverless.yaml
 - strimzi.yaml
 - crunchy.yaml
-- all.yaml
+- aqua.yaml
+- devspaces.yaml
+- devworkspace-operator.yaml
+- mcg-operator.yaml
+- ocs-operator.yaml
+- odf-csi-addons-operator.yaml
+- odf-operator.yaml

@@ -1,0 +1,14 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/devspaces.openshift-operators: ""
+  name: aqua-operator-certified
+  namespace: openshift-operators
+spec:
+  channel: "2022.4"
+  installPlanApproval: Automatic
+  name: aqua-operator-certified
+  source: certified-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: aqua-operator.2022.4.348

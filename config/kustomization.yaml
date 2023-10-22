@@ -12,7 +12,13 @@ resources:
   - operators/serverless.yaml
   - operators/strimzi.yaml
   - operators/crunchy.yaml
-  - operators/all.yaml
+  - operators/aqua.yaml
+  - operators/devspaces.yaml
+  - operators/devworkspace-operator.yaml
+  - operators/mcg-operator.yaml
+  - operators/ocs-operator.yaml
+  - operators/odf-csi-addons-operator.yaml
+  - operators/odf-operator.yaml
   
 # configure registry
   - registry/image-registry.yaml
