@@ -1,4 +1,6 @@
 #!/bin/bash
+## oc apply -k config/ 
+
 # This script sets up a single node cluster (SNC) which was created by 
 # the Cloud Installer (https://cloud.redhat.com/openshift/assisted-installer/clusters/~new)
 #
