@@ -7,3 +7,4 @@ resources:
 - serverless.yaml
 - strimzi.yaml
 - crunchy.yaml
+- all.yaml
