@@ -3,6 +3,13 @@
 oc apply -k config/
 
 
+dupa ce devspaces e creat-- > go to route
+
+create workspace: from git : https://raw.githubusercontent.com/RedHat-EMEA-SSA-Team/end-to-end-developer-workshop/rhds/devfile.yaml 
+
+
+
+
 This is a script which has some configuration modules for a fresh and clean OpenShift installation. If you've been using the Single Node OpenShift installation, you need some persistent volumes and you need to make the internal registry able to store your images. 
 
 This is what the script does right now:
