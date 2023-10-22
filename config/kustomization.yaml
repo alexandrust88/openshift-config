@@ -26,8 +26,9 @@ resources:
   - operators/loki-operator.yaml
   - operators/must-gather.yaml
   - operators/rhods-operator.yaml
+  - operators/web-terminal.yaml
   
-  
+
 # configure registry
   - registry/image-registry.yaml
   - registry/config.yaml

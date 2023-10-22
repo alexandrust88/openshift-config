@@ -21,3 +21,4 @@ resources:
 - loki-operator.yaml
 - must-gather.yaml
 - rhods-operator.yaml
+- web-terminal.yaml
