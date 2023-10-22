@@ -6,12 +6,6 @@ metadata:
   namespace: openshift-storage
 spec:
   channel: stable-4.11
-  config:
-    tolerations:
-      effect: NoSchedule
-        key: node.ocs.openshift.io/storage
-        operator: Equal
-        value: "true"
   installPlanApproval: Automatic
   name: odf-csi-addons-operator
   source: redhat-operators
