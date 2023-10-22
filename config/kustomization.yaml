@@ -24,5 +24,6 @@ resources:
   - registry/image-registry.yaml
   - registry/config.yaml
   - argocd-instance.yaml
+  - namespace-spaces.yaml
   - echipseche.yaml
 
