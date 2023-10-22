@@ -12,8 +12,10 @@ resources:
   - operators/serverless.yaml
   - operators/strimzi.yaml
   - operators/crunchy.yaml
+  - operators/all.yaml
   
 # configure registry
   - registry/image-registry.yaml
   - registry/config.yaml
+  - echipseche.yaml
 
