@@ -1,0 +1,14 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/must-gather-operator.global-load-balancer-operator: ''
+  name: must-gather-operator
+  namespace: global-load-balancer-operator
+spec:
+  channel: alpha
+  installPlanApproval: Automatic
+  name: must-gather-operator
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: must-gather-operator.v1.1.2

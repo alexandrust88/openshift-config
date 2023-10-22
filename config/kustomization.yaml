@@ -11,15 +11,21 @@ resources:
   - operators/gitops.yaml
   - operators/pipelines.yaml
   - operators/serverless.yaml
-  - operators/strimzi.yaml
+  #- operators/strimzi.yaml. conflicts with amq 
   - operators/crunchy.yaml
   - operators/aqua.yaml
   - operators/devspaces.yaml
   - operators/devworkspace-operator.yaml
-  - operators/mcg-operator.yaml
-  - operators/ocs-operator.yaml
-  - operators/odf-csi-addons-operator.yaml
+  #- operators/mcg-operator.yaml ## will be install by odf operator
+  #- operators/ocs-operator.yaml ## will be install by odf operator
+  #- operators/odf-csi-addons-operator.yaml ## will be install by odf operator
   - operators/odf-operator.yaml
+  - operators/amq-streams.yaml
+  - operators/compliance-operator.yaml
+  - operators/gpu-operator.yaml
+  - operators/loki-operator.yaml
+  - operators/must-gather.yaml
+  - operators/rhods-operator.yaml
   
 # configure registry
   - registry/image-registry.yaml

@@ -10,8 +10,8 @@ secretGenerator:
       - htpasswd
 
 #patchesStrategicMerge:
-patches:
-- htpasswd-cr.yaml
+# patches:
+# - htpasswd-cr.yaml
 resources:
-#- htpassword-cr2.yaml
+- htpassword-cr2.yaml
 - admin-rb.yaml
