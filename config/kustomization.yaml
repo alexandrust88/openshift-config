@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 # first install console add/ons
+  - operators/ns.yaml
   - console/dev-view.yaml
   - console/links.yaml
 
