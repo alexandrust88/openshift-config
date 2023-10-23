@@ -35,4 +35,5 @@ resources:
   - argocd-instance.yaml
   - namespace-spaces.yaml
   - echipseche.yaml
+  - rbac/base
  # - ../openshift-gitops-examples/components/applications

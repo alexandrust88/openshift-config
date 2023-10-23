@@ -1,0 +1,22 @@
+apiVersion: dev-user.openshift.io/v1
+kind: Group
+metadata:
+  name: developer
+users:
+  - dev-user01
+  - dev-user02
+  - dev-user03
+  - dev-user04
+  - dev-user05
+  - dev-user06
+  - dev-user07
+  - dev-user08
+  - dev-user09
+  - dev-user10
+  - dev-user11
+  - dev-user12
+  - dev-user13
+  - dev-user14
+  - dev-user15
+  - dev-user16  
+
