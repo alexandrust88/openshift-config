@@ -9,7 +9,7 @@ secretGenerator:
     files:
       - htpasswd
 
-patchesStrategicMerge:
+#patchesStrategicMerge:
 patches:
 - htpasswd-cr.yaml
 resources:
