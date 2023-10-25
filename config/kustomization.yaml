@@ -16,9 +16,9 @@ resources:
   - operators/aqua.yaml
   - operators/devspaces.yaml
   - operators/devworkspace-operator.yaml
-  #- operators/mcg-operator.yaml ## will be install by odf operator
-  #- operators/ocs-operator.yaml ## will be install by odf operator
-  #- operators/odf-csi-addons-operator.yaml ## will be install by odf operator
+  - operators/mcg-operator.yaml ## will be install by odf operator
+  - operators/ocs-operator.yaml ## will be install by odf operator
+  - operators/odf-csi-addons-operator.yaml ## will be install by odf operator
   - operators/odf-operator.yaml
   - operators/amq-streams.yaml
   - operators/compliance-operator.yaml
