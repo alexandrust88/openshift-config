@@ -16,9 +16,9 @@ resources:
   - operators/aqua.yaml
   - operators/devspaces.yaml
   - operators/devworkspace-operator.yaml
-  - operators/mcg-operator.yaml ## will be install by odf operator
-  - operators/ocs-operator.yaml ## will be install by odf operator
-  - operators/odf-csi-addons-operator.yaml ## will be install by odf operator
+  # - operators/mcg-operator.yaml ## will be install by odf operator
+  # - operators/ocs-operator.yaml ## will be install by odf operator
+  # - operators/odf-csi-addons-operator.yaml ## will be install by odf operator
   - operators/odf-operator.yaml
   - operators/amq-streams.yaml
   - operators/compliance-operator.yaml
@@ -32,8 +32,8 @@ resources:
 # configure registry
   - registry/image-registry.yaml
   - registry/config.yaml
-  - argocd-instance.yaml
+  #- argocd-instance.yaml
   - namespace-spaces.yaml
-  - echipseche.yaml
+  #- echipseche.yaml
   - rbac/base
  # - ../openshift-gitops-examples/components/applications
