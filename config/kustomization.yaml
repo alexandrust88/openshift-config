@@ -12,26 +12,26 @@ resources:
   - operators/pipelines.yaml
   - operators/serverless.yaml
   #- operators/strimzi.yaml. conflicts with amq 
-  - operators/crunchy.yaml
-  - operators/aqua.yaml
+  # - operators/crunchy.yaml
+  # - operators/aqua.yaml
   - operators/devspaces.yaml
   - operators/devworkspace-operator.yaml
   # - operators/mcg-operator.yaml ## will be install by odf operator
   # - operators/ocs-operator.yaml ## will be install by odf operator
   # - operators/odf-csi-addons-operator.yaml ## will be install by odf operator
-  - operators/odf-operator.yaml
+ # - operators/odf-operator.yaml
   - operators/amq-streams.yaml
-  - operators/compliance-operator.yaml
-  - operators/gpu-operator.yaml
-  - operators/loki-operator.yaml
+  #- operators/compliance-operator.yaml
+  #- operators/gpu-operator.yaml
+  #- operators/loki-operator.yaml
   - operators/must-gather.yaml
-  - operators/rhods-operator.yaml
+  #- operators/rhods-operator.yaml
   - operators/web-terminal.yaml
   
 
 # configure registry
   - registry/image-registry.yaml
-  - registry/config.yaml
+  #- registry/config.yaml
   #- argocd-instance.yaml
   - namespace-spaces.yaml
   #- echipseche.yaml
