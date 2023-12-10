@@ -1,0 +1,14 @@
+apiVersion: hco.kubevirt.io/v1beta1
+kind: HyperConverged
+metadata:
+  namespace: openshift-cnv
+  name: kubevirt-hyperconverged
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    deployOVS: "false"
+  labels:
+    app: kubevirt-hyperconverged
+spec: {}
+  # vddkInitImage: docker.io/shaker242/vddk:6.7.3 # used with ocp < 4.9
