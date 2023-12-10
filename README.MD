@@ -4,6 +4,21 @@
 4. apply argocd + devworkspaces
 
 
+labs order : ocp admin 
+
+1.
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+10.
+
+
+
 
 
 
