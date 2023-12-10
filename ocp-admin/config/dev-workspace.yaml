@@ -1,0 +1,412 @@
+apiVersion: workspace.devfile.io/v1alpha1
+kind: DevWorkspace
+metadata:
+  annotations:
+    che.eclipse.org/che-editor: che-incubator/che-code/latest
+    che.eclipse.org/devfile: |
+      schemaVersion: 2.2.0
+      metadata:
+        name: wksp-end-to-end-dev
+        namespace: admin2-devspaces
+      projects:
+        - attributes:
+            source-origin: branch
+          git:
+            checkoutFrom:
+              revision: rhds
+            remotes:
+              origin: >-
+                https://github.com/RedHat-EMEA-SSA-Team/end-to-end-developer-workshop.git
+          name: workshop
+      components:
+        - container:
+            cpuLimit: 1000m
+            cpuRequest: 50m
+            endpoints:
+              - attributes:
+                  protocol: http
+                exposure: public
+                name: 8080-port
+                protocol: http
+                targetPort: 8080
+              - attributes:
+                  protocol: http
+                exposure: public
+                name: 9000-port
+                protocol: http
+                targetPort: 9000
+              - attributes:
+                  protocol: http
+                  public: 'false'
+                exposure: internal
+                name: 5005-port
+                protocol: http
+                targetPort: 5005
+            env:
+              - name: MAVEN_OPTS
+                value: '-Xmx2048m -Duser.home=/home/developer'
+            image: quay.io/redhat-emea-ssa-team/workshop-tools:6.6
+            memoryLimit: 2048Mi
+            memoryRequest: 256Mi
+            mountSources: true
+            sourceMapping: /projects
+            volumeMounts:
+              - name: m2
+                path: /home/developer/.m2
+          name: workshop-tools
+        - name: m2
+          volume:
+            size: 10G
+      commands:
+        - exec:
+            commandLine: >-
+              [[ ! -z "$(ps aux | grep -v grep | grep "compile quarkus:dev" | awk
+              '{print $2}')" ]] &&  echo '!! Application already running in Dev Mode
+              !!' ||  mvn compile quarkus:dev -Ddebug=false
+            component: workshop-tools
+            label: Inventory - Compile (Dev Mode)
+            workingDir: /projects/workshop/labs/inventory-quarkus
+          id: inventory---compile-dev-mode
+        - exec:
+            commandLine: mvn clean package -DskipTests
+            component: workshop-tools
+            label: Inventory - Build
+            workingDir: /projects/workshop/labs/inventory-quarkus
+          id: inventory---build
+        - exec:
+            commandLine: >-
+              mvn package -Dquarkus.container-image.build=true -DskipTests
+              -Dquarkus.container-image.group=$(oc project -q) 
+              -Dquarkus.kubernetes-client.trust-certs=true
+            component: workshop-tools
+            label: Inventory - Push Component
+            workingDir: /projects/workshop/labs/inventory-quarkus
+          id: inventory---push-component
+        - exec:
+            commandLine: >-
+              mvn install -Dquarkus.kubernetes.deploy=true -DskipTests
+              -Dquarkus.container-image.group=$(oc project -q) 
+              -Dquarkus.kubernetes-client.trust-certs=true
+            component: workshop-tools
+            label: Inventory - Deploy Component
+            workingDir: /projects/workshop/labs/inventory-quarkus
+          id: inventory---deploy-component
+        - exec:
+            commandLine: mvn clean package -DskipTests
+            component: workshop-tools
+            label: Catalog - Build
+            workingDir: /projects/workshop/labs/catalog-spring-boot
+          id: catalog---build
+        - exec:
+            commandLine: mvn spring-boot:run
+            component: workshop-tools
+            label: Catalog - Run
+            workingDir: /projects/workshop/labs/catalog-spring-boot
+          id: catalog---run
+        - exec:
+            commandLine: mvn package -DskipTests oc:build oc:resource oc:apply
+            component: workshop-tools
+            label: Catalog - Deploy Component
+            workingDir: /projects/workshop/labs/catalog-spring-boot
+          id: catalog---deploy-component
+        - exec:
+            commandLine: >-
+              oc new-build dotnet:6.0 --name gateway-coolstore
+              --labels=component=gateway --env DOTNET_STARTUP_PROJECT=app.csproj
+              --binary=true && oc start-build gateway-coolstore --from-dir=. -w -n
+              ${DEVWORKSPACE_NAMESPACE} && oc new-app gateway-coolstore:latest --name
+              gateway-coolstore 
+              --labels=app=coolstore,app.kubernetes.io/instance=gateway,app.kubernetes.io/part-of=coolstore,app.kubernetes.io/name=gateway,app.openshift.io/runtime=dotnet,component=gateway
+              -n ${DEVWORKSPACE_NAMESPACE} && oc expose svc gateway-coolstore -n
+              ${DEVWORKSPACE_NAMESPACE}
+            component: workshop-tools
+            label: Gateway - Build and Deploy Component
+            workingDir: /projects/workshop/labs/gateway-dotnet
+          id: gateway---build-and-deploy
+        - exec:
+            commandLine: >-
+              for i in {1..60}; do if [ $(curl -s -w "%{http_code}" -o /dev/null
+              http://inventory-coolstore.${DEVWORKSPACE_NAMESPACE}.svc:8080/api/inventory/329299)
+              == "200" ]; then MSG="\\033[0;32mThe request to Inventory Service has
+              succeeded\\033[0m"; else MSG="\\033[0;31mERROR - The request to
+              Inventory Service has failed\\033[0m"; fi;echo -e $MSG;sleep 1s; done
+            component: workshop-tools
+            label: Inventory - Generate Traffic
+            workingDir: /projects/workshop/labs/inventory-quarkus
+          id: inventory---generate-traffic
+        - exec:
+            commandLine: >-
+              oc project ${DEVWORKSPACE_NAMESPACE}; oc set probe
+              deployment/gateway-coolstore  --liveness --readiness --period-seconds=5
+              --get-url=http://:8080/health;oc set probe deployment/web-coolstore 
+              --liveness --readiness --period-seconds=5 --get-url=http://:8080/;echo
+              "Health Probes Done"
+            component: workshop-tools
+            label: Probes - Configure Gateway & Web
+            workingDir: /projects/workshop
+          id: probes---configure-gateway--web
+        - exec:
+            commandLine: ./inner_loop_deploy_coolstore.sh ${DEVWORKSPACE_NAMESPACE}
+            component: workshop-tools
+            label: Inner Loop - Deploy Coolstore
+            workingDir: /projects/workshop/.tasks
+          id: inner-loop---deploy-coolstore
+        - exec:
+            commandLine: >-
+              git checkout .; git clean -fd; git clean -f; oc delete
+              deployment,deploymentconfig,buildconfig,imagestream,route,secret,configmap,pvc,service
+              --all --namespace ${DEVWORKSPACE_NAMESPACE}
+            component: workshop-tools
+            label: OpenShift - Cleanup
+            workingDir: /projects/workshop
+          id: openshift---cleanup
+      attributes:
+        dw.metadata.annotations:
+          che.eclipse.org/devfile-source: |
+            url:
+              location: >-
+                https://raw.githubusercontent.com/RedHat-EMEA-SSA-Team/end-to-end-developer-workshop/rhds/devfile.yaml
+            factory:
+              params: >-
+                url=https://raw.githubusercontent.com/RedHat-EMEA-SSA-Team/end-to-end-developer-workshop/rhds/devfile.yaml
+    che.eclipse.org/last-updated-timestamp: '2023-10-25T06:06:20.038Z'
+    controller.devfile.io/started-at: '1698214035091'
+  resourceVersion: '124571'
+  name: wksp-end-to-end-dev
+  uid: b8893d8c-20dc-467c-b9d1-87e25d75a7d1
+  creationTimestamp: '2023-10-25T06:06:19Z'
+  generation: 5
+  managedFields:
+    - apiVersion: workspace.devfile.io/v1alpha2
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          .: {}
+          'f:conditions': {}
+          'f:devworkspaceId': {}
+          'f:mainUrl': {}
+          'f:message': {}
+          'f:phase': {}
+      manager: devworkspace-controller
+      operation: Update
+      subresource: status
+      time: '2023-10-25T06:06:20Z'
+    - apiVersion: workspace.devfile.io/v1alpha2
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:che.eclipse.org/che-editor': {}
+            'f:che.eclipse.org/devfile': {}
+            'f:che.eclipse.org/last-updated-timestamp': {}
+        'f:spec':
+          .: {}
+          'f:contributions': {}
+          'f:routingClass': {}
+          'f:started': {}
+          'f:template':
+            .: {}
+            'f:attributes':
+              .: {}
+              'f:controller.devfile.io/devworkspace-config':
+                .: {}
+                'f:name': {}
+                'f:namespace': {}
+              'f:controller.devfile.io/scc': {}
+              'f:controller.devfile.io/storage-type': {}
+              'f:dw.metadata.annotations':
+                .: {}
+                'f:che.eclipse.org/devfile-source': {}
+            'f:commands': {}
+            'f:components': {}
+            'f:projects': {}
+      manager: unknown
+      operation: Update
+      time: '2023-10-25T06:06:20Z'
+    - apiVersion: workspace.devfile.io/v1alpha2
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            'f:controller.devfile.io/started-at': {}
+          'f:finalizers':
+            .: {}
+            'v:"rbac.controller.devfile.io"': {}
+            'v:"storage.controller.devfile.io"': {}
+      manager: devworkspace-controller
+      operation: Update
+      time: '2023-10-25T06:07:15Z'
+  namespace: admin2-devspaces
+  finalizers:
+    - storage.controller.devfile.io
+    - rbac.controller.devfile.io
+  labels:
+    controller.devfile.io/creator: d0270ea7-eaec-420e-9cf1-08ca90b0135e
+spec:
+  routingClass: che
+  started: true
+  template:
+    commands:
+      - exec:
+          commandLine: >-
+            [[ ! -z "$(ps aux | grep -v grep | grep "compile quarkus:dev" | awk
+            '{print $2}')" ]] &&  echo '!! Application already running in Dev
+            Mode !!' ||  mvn compile quarkus:dev -Ddebug=false
+          component: workshop-tools
+          id: inventory---compile-dev-mode
+          label: Inventory - Compile (Dev Mode)
+          workingDir: /projects/workshop/labs/inventory-quarkus
+      - exec:
+          commandLine: mvn clean package -DskipTests
+          component: workshop-tools
+          id: inventory---build
+          label: Inventory - Build
+          workingDir: /projects/workshop/labs/inventory-quarkus
+      - exec:
+          commandLine: >-
+            mvn package -Dquarkus.container-image.build=true -DskipTests
+            -Dquarkus.container-image.group=$(oc project -q) 
+            -Dquarkus.kubernetes-client.trust-certs=true
+          component: workshop-tools
+          id: inventory---push-component
+          label: Inventory - Push Component
+          workingDir: /projects/workshop/labs/inventory-quarkus
+      - exec:
+          commandLine: >-
+            mvn install -Dquarkus.kubernetes.deploy=true -DskipTests
+            -Dquarkus.container-image.group=$(oc project -q) 
+            -Dquarkus.kubernetes-client.trust-certs=true
+          component: workshop-tools
+          id: inventory---deploy-component
+          label: Inventory - Deploy Component
+          workingDir: /projects/workshop/labs/inventory-quarkus
+      - exec:
+          commandLine: mvn clean package -DskipTests
+          component: workshop-tools
+          id: catalog---build
+          label: Catalog - Build
+          workingDir: /projects/workshop/labs/catalog-spring-boot
+      - exec:
+          commandLine: 'mvn spring-boot:run'
+          component: workshop-tools
+          id: catalog---run
+          label: Catalog - Run
+          workingDir: /projects/workshop/labs/catalog-spring-boot
+      - exec:
+          commandLine: 'mvn package -DskipTests oc:build oc:resource oc:apply'
+          component: workshop-tools
+          id: catalog---deploy-component
+          label: Catalog - Deploy Component
+          workingDir: /projects/workshop/labs/catalog-spring-boot
+      - exec:
+          commandLine: >-
+            oc new-build dotnet:6.0 --name gateway-coolstore
+            --labels=component=gateway --env DOTNET_STARTUP_PROJECT=app.csproj
+            --binary=true && oc start-build gateway-coolstore --from-dir=. -w -n
+            ${DEVWORKSPACE_NAMESPACE} && oc new-app gateway-coolstore:latest
+            --name gateway-coolstore 
+            --labels=app=coolstore,app.kubernetes.io/instance=gateway,app.kubernetes.io/part-of=coolstore,app.kubernetes.io/name=gateway,app.openshift.io/runtime=dotnet,component=gateway
+            -n ${DEVWORKSPACE_NAMESPACE} && oc expose svc gateway-coolstore -n
+            ${DEVWORKSPACE_NAMESPACE}
+          component: workshop-tools
+          id: gateway---build-and-deploy
+          label: Gateway - Build and Deploy Component
+          workingDir: /projects/workshop/labs/gateway-dotnet
+      - exec:
+          commandLine: >-
+            for i in {1..60}; do if [ $(curl -s -w "%{http_code}" -o /dev/null
+            http://inventory-coolstore.${DEVWORKSPACE_NAMESPACE}.svc:8080/api/inventory/329299)
+            == "200" ]; then MSG="\\033[0;32mThe request to Inventory Service
+            has succeeded\\033[0m"; else MSG="\\033[0;31mERROR - The request to
+            Inventory Service has failed\\033[0m"; fi;echo -e $MSG;sleep 1s;
+            done
+          component: workshop-tools
+          id: inventory---generate-traffic
+          label: Inventory - Generate Traffic
+          workingDir: /projects/workshop/labs/inventory-quarkus
+      - exec:
+          commandLine: >-
+            oc project ${DEVWORKSPACE_NAMESPACE}; oc set probe
+            deployment/gateway-coolstore  --liveness --readiness
+            --period-seconds=5 --get-url=http://:8080/health;oc set probe
+            deployment/web-coolstore  --liveness --readiness --period-seconds=5
+            --get-url=http://:8080/;echo "Health Probes Done"
+          component: workshop-tools
+          id: probes---configure-gateway--web
+          label: Probes - Configure Gateway & Web
+          workingDir: /projects/workshop
+      - exec:
+          commandLine: './inner_loop_deploy_coolstore.sh ${DEVWORKSPACE_NAMESPACE}'
+          component: workshop-tools
+          id: inner-loop---deploy-coolstore
+          label: Inner Loop - Deploy Coolstore
+          workingDir: /projects/workshop/.tasks
+      - exec:
+          commandLine: >-
+            git checkout .; git clean -fd; git clean -f; oc delete
+            deployment,deploymentconfig,buildconfig,imagestream,route,secret,configmap,pvc,service
+            --all --namespace ${DEVWORKSPACE_NAMESPACE}
+          component: workshop-tools
+          id: openshift---cleanup
+          label: OpenShift - Cleanup
+          workingDir: /projects/workshop
+    components:
+      - container:
+          endpoints:
+            - attributes:
+                protocol: http
+              exposure: public
+              name: 8080-port
+              protocol: http
+              targetPort: 8080
+            - attributes:
+                protocol: http
+              exposure: public
+              name: 9000-port
+              protocol: http
+              targetPort: 9000
+            - attributes:
+                protocol: http
+                public: 'false'
+              exposure: internal
+              name: 5005-port
+              protocol: http
+              targetPort: 5005
+          env:
+            - name: MAVEN_OPTS
+              value: '-Xmx2048m -Duser.home=/home/developer'
+            - name: CHE_DASHBOARD_URL
+              value: >-
+                https://devspaces.apps.cluster-px8rt.px8rt.sandbox2689.opentlc.com
+            - name: CHE_PLUGIN_REGISTRY_URL
+              value: >-
+                https://devspaces.apps.cluster-px8rt.px8rt.sandbox2689.opentlc.com/plugin-registry/v3
+            - name: CHE_PLUGIN_REGISTRY_INTERNAL_URL
+              value: 'http://plugin-registry.spaces.svc:8080/v3'
+            - name: CLUSTER_CONSOLE_URL
+              value: >-
+                https://console-openshift-console.apps.cluster-px8rt.px8rt.sandbox2689.opentlc.com
+            - name: CLUSTER_CONSOLE_TITLE
+              value: OpenShift console
+            - name: OPENVSX_REGISTRY_URL
+              value: ''
+          image: 'quay.io/redhat-emea-ssa-team/workshop-tools:6.6'
+          memoryLimit: 2048Mi
+          mountSources: true
+          name: workshop-tools
+          sourceMapping: /projects
+          volumeMounts:
+            - name: m2
+              path: /home/developer/.m2
+      - volume:
+          name: m2
+          size: 10G
+    projects:
+      - git:
+          checkoutFrom:
+            revision: rhds
+          remotes:
+            origin: >-
+              https://github.com/RedHat-EMEA-SSA-Team/end-to-end-developer-workshop.git
+        name: workshop

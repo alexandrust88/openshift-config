@@ -1,10 +1,16 @@
 # openshift-config
 
+curl --silent --location --remote-name "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v5.3.0/kustomize_kustomize.v5.3.0_linux_amd64" && chmod a+x kustomize_kustomize.v5.3.0_linux_amd64 && sudo mv kustomize_kustomize.v5.3.0_linux_amd64 /usr/local/bin/kustomize
 
 
 install tools 
 
+[\[Title\](ocp-admin/oauth/base/oauth.yaml)](ocp-admin/oauth/base/oauth.yaml)
 
+
+[Title](ocp-admin/oauth/base/oauth.yaml)
+
+https://github.com/ocpdude/ocp-argocd/blob/main/openshift-cluster/redcloud/apiserver/base/kustomization.yaml
 
 oc apply -k config/
 

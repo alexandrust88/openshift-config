@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - console/dev-view.yaml
+  - console/links.yaml
+
+# install all operators
+  - operators/gitops.yaml
+  - operators/pipelines.yaml
+  - operators/serverless.yaml
+  - operators/devspaces.yaml
+  - operators/devworkspace-operator.yaml
+  - operators/amq-streams.yaml
+  - operators/must-gather.yaml
+  - operators/web-terminal.yaml
+  
+
+  - registry/image-registry.yaml
+  - namespace-spaces.yaml
+  - echipseche.yaml
+  - argocd-instance.yaml
+  - dev-workspace.yaml

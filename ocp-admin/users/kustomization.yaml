@@ -1,0 +1,46 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: openshift-config
+
+secretGenerator:
+  - name: htpass-secret
+    options:
+      disableNameSuffixHash: true
+    files:
+      - htpasswd
+
+resources:
+- admin-rb.yaml
+- oauth.yaml
+patches:
+  - patch: |-
+      - op: add
+        path: /spec/identityProviders/-
+        value:
+          htpasswd:
+            fileData:
+              name: htpass-secret
+          mappingMethod: claim
+          name: htpasswd1
+          type: HTPasswd
+    target:
+      group: config.openshift.io
+      kind: OAuth
+      name: cluster
+      version: v1
+  - patch: |-
+      - op: add
+        path: /spec/identityProviders/-
+        value:
+          htpasswd:
+            fileData:
+              name: htpass-secret
+          mappingMethod: claim
+          name: htpasswd2
+          type: HTPasswd
+    target:
+      group: config.openshift.io
+      kind: OAuth
+      name: cluster
+      version: v1
+
