@@ -1,6 +1,42 @@
 # openshift-config
 
+
+
+install tools 
+
+
+
 oc apply -k config/
+
+
+http://gitea-ci.apps.training123.ocptraininglabs.org/
+
+http://nexus-ci.apps.training123.ocptraininglabs.org/
+
+
+export OCP_USER=1988
+export GITEA_USER=adminadmin
+export GITEA_PASSWORD=adminadmin
+export GITEA_URL=http://gitea-ci.apps.training123.ocptraininglabs.org
+
+https://github.com/redhat-gpte-devopsautomation/coffee-shop-source.git
+
+oc new-app --name=barista \
+   openshift/ubi8-openjdk-11:1.3~${GITEA_URL}/adminadmin/coffee-shop-source.git \
+   --context-dir=barista \
+   --source-secret=gitea-secret \
+   --build-env=MAVEN_MIRROR_URL=http://nexus.ci.svc:8081/repository/maven-all-public/ \
+   --labels=app.kubernetes.io/part-of=coffee-shop,app.openshift.io/runtime=quarkus \
+   -n ${OCP_USER}-dev-coffeeshop
+
+
+oc new-app --name=coffee-shop \
+   openshift/ubi8-openjdk-11:1.3~${GITEA_URL}/adminadmin/coffee-shop-source.git \
+   --context-dir=coffee-shop \
+   --source-secret=gitea-secret \
+
+   --labels=app.kubernetes.io/part-of=coffee-shop,app.openshift.io/runtime=quarkus \
+   -n ${OCP_USER}-dev-coffeeshop
 
 
 dupa ce devspaces e creat-- > go to route
