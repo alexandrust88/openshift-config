@@ -2,7 +2,7 @@
 2. apply kustomizations from ocp-admin
 3. wait for operators to deploy
 4. apply argocd + devworkspaces
-
+apply odf path with kustomize
 
 labs order : ocp admin 
 
