@@ -1,6 +1,0 @@
-*.key
-*.crt
-*.yaml
-.DS_Store
-ocpadmin.htpasswd
-pull-secret.txt
