@@ -6,12 +6,12 @@ apply odf path with kustomize
 
 labs order : ocp admin 
 
-1.
-2.
-3.
-4.
-5.
-6.
+1. olm : https://github.com/devops-gang/openshift-dev/blob/main/lab05.mdx 
+2. helm https://github.com/devops-gang/openshift-dev/blob/main/lab08.mdx
+3. lab : resource contraints https://github.com/devops-gang/openshift-dev/blob/main/lab09.mdx
+4. parksmap : https://github.com/devops-gang/openshift-dev/blob/main/lab10.mdx
+5. network policies : https://github.com/devops-gang/openshift-dev/blob/main/lab11.mdx
+6. 12-18 e argocd 
 7.
 8.
 9.
