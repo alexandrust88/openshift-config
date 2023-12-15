@@ -43,4 +43,18 @@ patches:
       kind: OAuth
       name: cluster
       version: v1
-
+  - patch: |-
+      - op: add
+        path: /spec/identityProviders/-
+        value:
+          htpasswd:
+            fileData:
+              name: htpass-secret
+          mappingMethod: claim
+          name: testingindev
+          type: HTPasswd
+    target:
+      group: config.openshift.io
+      kind: OAuth
+      name: cluster
+      version: v1
